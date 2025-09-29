@@ -67,6 +67,7 @@ class MovieDetailSerializer(MovieSerializer):
             "actors",
         )
 
+
 class MovieDetailForSessionSerializer(serializers.ModelSerializer):
     genres = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field="name"
@@ -112,6 +113,7 @@ class MovieSessionDetailSerializer(serializers.ModelSerializer):
         tickets = Ticket.objects.filter(movie_session=obj).only("row", "seat")
         return [{"row": t.row, "seat": t.seat} for t in tickets]
 
+
 class MovieSessionCompactSerializer(serializers.ModelSerializer):
     movie_title = serializers.CharField(source="movie.title", read_only=True)
     cinema_hall_name = serializers.CharField(
@@ -131,6 +133,7 @@ class MovieSessionCompactSerializer(serializers.ModelSerializer):
             "cinema_hall_capacity",
         )
 
+
 class MovieSessionListWithAvailabilitySerializer(MovieSessionSerializer):
     movie_title = serializers.CharField(source="movie.title", read_only=True)
     cinema_hall_name = serializers.CharField(
@@ -148,14 +151,15 @@ class MovieSessionListWithAvailabilitySerializer(MovieSessionSerializer):
             "show_time",
             "movie_title",
             "cinema_hall_name",
-           "cinema_hall_capacity",
-           "tickets_available",
+            "cinema_hall_capacity",
+            "tickets_available",
         )
 
     def get_tickets_available(self, obj):
         total_capacity = obj.cinema_hall.capacity
         taken = Ticket.objects.filter(movie_session=obj).count()
         return max(total_capacity - taken, 0)
+
 
 class TicketListSerializer(serializers.ModelSerializer):
     movie_session = MovieSessionCompactSerializer(read_only=True)
@@ -247,7 +251,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             seen = by_session.setdefault(ms_id, set())
             if key in seen:
                 duplicates.append(
-                     {"movie_session": ms_id, "row": row, "seat": seat}
+                    {"movie_session": ms_id, "row": row, "seat": seat}
                 )
             else:
                 seen.add(key)
@@ -288,7 +292,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             order = Order.objects.create(user=user)
             Ticket.objects.bulk_create(
                 [
-                     Ticket(
+                    Ticket(
                         order=order,
                         row=ticket_data["row"],
                         seat=ticket_data["seat"],
