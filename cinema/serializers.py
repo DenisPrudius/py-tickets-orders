@@ -223,10 +223,8 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         if not tickets_payload:
             raise serializers.ValidationError(
                 {
-                    """
-                    tickets: "This field is required and must be
-                    a non-empty list.
-                    """
+                    "tickets": "This field is required and must "
+                               "be a non-empty list."
                 }
             )
 
@@ -240,11 +238,9 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             except (TypeError, ValueError):
                 raise serializers.ValidationError(
                     {
-                        """
-                        tickets": "Each ticket must have integer 'row',
-                        'seat', and 'movie_session'.
-                        """
-                    }
+                        "tickets":
+                            "Each ticket must have integer 'row', 'seat', "
+                            "and 'movie_session'."}
                 )
 
             key = (row, seat)
@@ -283,7 +279,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                     {"tickets": {"taken": conflicts}}
                 )
 
-            return attrs
+        return attrs
 
     def create(self, validated_data):
         tickets_data = validated_data.pop("tickets", [])
